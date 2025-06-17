@@ -21,9 +21,9 @@ class _HomePageState extends State<Homescreen> {
 
     setState(() {
       if (result == null || result.isEmpty) {
-        journalEntries.remove(date); // Delete if result is null or empty
+        journalEntries.remove(date); 
       } else {
-        journalEntries[date] = result; // Save or update entry
+        journalEntries[date] = result; 
       }
     });
   }
