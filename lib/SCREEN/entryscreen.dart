@@ -21,11 +21,11 @@ class _EntryScreenState extends State<EntryScreen> {
 
   void _saveEntry() {
     String text = _controller.text.trim();
-    Navigator.pop(context, text); // just return a string
+    Navigator.pop(context, text); 
   }
 
   void _deleteEntry() {
-    Navigator.pop(context, null); // null = delete
+    Navigator.pop(context, null); 
   }
 
   @override
