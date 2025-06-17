@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'SCREEN/homescreen.dart'; // correct path to homescreen.dart
+import 'SCREEN/homescreen.dart'; 
 
 void main() {
   runApp(DailyJournalApp());
