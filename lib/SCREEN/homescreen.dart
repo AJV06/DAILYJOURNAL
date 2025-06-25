@@ -33,15 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       if (result == null || result.isEmpty) {
-<<<<<<< HEAD
         _journalEntries.remove(date);
       } else {
         _journalEntries[date] = result;
-=======
-        journalEntries.remove(date); 
-      } else {
-        journalEntries[date] = result; 
->>>>>>> 69e0510f0faae5df6f0f17d53cdc441fddbe8634
       }
     });
   }
@@ -55,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('📔 Daily Journal'),
+        title: const Text(' Daily Journal'),
         actions: [
           IconButton(
             icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),

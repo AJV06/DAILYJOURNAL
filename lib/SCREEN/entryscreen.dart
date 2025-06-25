@@ -20,27 +20,18 @@ class _EntryScreenState extends State<EntryScreen> {
   }
 
   void _saveEntry() {
-<<<<<<< HEAD
     Navigator.pop(context, _controller.text.trim());
   }
 
   void _deleteEntry() {
     Navigator.pop(context, null);
-=======
-    String text = _controller.text.trim();
-    Navigator.pop(context, text); 
-  }
-
-  void _deleteEntry() {
-    Navigator.pop(context, null); 
->>>>>>> 69e0510f0faae5df6f0f17d53cdc441fddbe8634
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('📝 ${widget.date}'),
+        title: Text('${widget.date}'),
         actions: [
           IconButton(icon: const Icon(Icons.delete), onPressed: _deleteEntry),
           IconButton(icon: const Icon(Icons.save), onPressed: _saveEntry),
