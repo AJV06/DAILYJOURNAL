@@ -1,64 +1,112 @@
 import 'package:flutter/material.dart';
 import 'entryscreen.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-class Homescreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
+  final bool isDarkMode;
+  final VoidCallback toggleTheme;
+
+  const HomeScreen({
+    super.key,
+    required this.isDarkMode,
+    required this.toggleTheme,
+  });
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<Homescreen> {
-  final Map<String, String> journalEntries = {};
+class _HomeScreenState extends State<HomeScreen> {
+  final Map<String, String> _journalEntries = {};
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
 
   void _openEntryScreen(String date) async {
     final result = await Navigator.push<String?>(
       context,
       MaterialPageRoute(
         builder: (context) =>
-            EntryScreen(date: date, existingText: journalEntries[date]),
+            EntryScreen(date: date, existingText: _journalEntries[date]),
       ),
     );
 
     setState(() {
       if (result == null || result.isEmpty) {
-        journalEntries.remove(date); // Delete if result is null or empty
+        _journalEntries.remove(date);
       } else {
-        journalEntries[date] = result; // Save or update entry
+        _journalEntries[date] = result;
       }
     });
   }
 
-  String _getTodayDate() {
-    return DateFormat('yyyy-MM-dd').format(DateTime.now());
-  }
-
   @override
   Widget build(BuildContext context) {
-    final dates = journalEntries.keys.toList()..sort((a, b) => b.compareTo(a));
+    String selectedDateStr = DateFormat(
+      'yyyy-MM-dd',
+    ).format(_selectedDay ?? _focusedDay);
+    final entryText = _journalEntries[selectedDateStr];
 
     return Scaffold(
-      appBar: AppBar(title: Text('Daily Journal')),
-      body: dates.isEmpty
-          ? Center(child: Text('Click + to add entries.'))
-          : ListView.builder(
-              itemCount: dates.length,
-              itemBuilder: (context, index) {
-                final date = dates[index];
-                return ListTile(
-                  title: Text(date),
-                  subtitle: Text(
-                    journalEntries[date]!.split('\n').first,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () => _openEntryScreen(date),
-                );
-              },
+      appBar: AppBar(
+        title: const Text('📔 Daily Journal'),
+        actions: [
+          IconButton(
+            icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            onPressed: widget.toggleTheme,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          TableCalendar(
+            firstDay: DateTime.utc(2020, 1, 1),
+            lastDay: DateTime.utc(2040, 12, 31),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDay = selectedDay;
+                _focusedDay = focusedDay;
+              });
+            },
+            calendarStyle: const CalendarStyle(
+              todayDecoration: BoxDecoration(
+                color: Colors.indigo,
+                shape: BoxShape.circle,
+              ),
+              selectedDecoration: BoxDecoration(
+                color: Colors.deepPurple,
+                shape: BoxShape.circle,
+              ),
             ),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: entryText == null
+                ? Center(child: Text('No entry for $selectedDateStr'))
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Card(
+                      elevation: 2,
+                      child: ListTile(
+                        title: Text(selectedDateStr),
+                        subtitle: Text(
+                          entryText.split('\n').first,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        onTap: () => _openEntryScreen(selectedDateStr),
+                      ),
+                    ),
+                  ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _openEntryScreen(_getTodayDate()),
-        child: Icon(Icons.add),
-        tooltip: 'Add Entry',
+        onPressed: () => _openEntryScreen(selectedDateStr),
+        child: const Icon(Icons.add),
+        tooltip: 'Add/Edit Entry',
       ),
     );
   }

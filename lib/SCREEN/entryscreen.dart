@@ -4,10 +4,10 @@ class EntryScreen extends StatefulWidget {
   final String date;
   final String? existingText;
 
-  EntryScreen({required this.date, this.existingText});
+  const EntryScreen({super.key, required this.date, this.existingText});
 
   @override
-  _EntryScreenState createState() => _EntryScreenState();
+  State<EntryScreen> createState() => _EntryScreenState();
 }
 
 class _EntryScreenState extends State<EntryScreen> {
@@ -20,30 +20,21 @@ class _EntryScreenState extends State<EntryScreen> {
   }
 
   void _saveEntry() {
-    String text = _controller.text.trim();
-    Navigator.pop(context, text); // just return a string
+    Navigator.pop(context, _controller.text.trim());
   }
 
   void _deleteEntry() {
-    Navigator.pop(context, null); // null = delete
+    Navigator.pop(context, null);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Entry: ${widget.date}'),
+        title: Text('📝 ${widget.date}'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: _deleteEntry,
-            tooltip: 'Delete',
-          ),
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: _saveEntry,
-            tooltip: 'Save',
-          ),
+          IconButton(icon: const Icon(Icons.delete), onPressed: _deleteEntry),
+          IconButton(icon: const Icon(Icons.save), onPressed: _saveEntry),
         ],
       ),
       body: Padding(
@@ -53,8 +44,8 @@ class _EntryScreenState extends State<EntryScreen> {
           maxLines: null,
           expands: true,
           keyboardType: TextInputType.multiline,
-          decoration: InputDecoration(
-            hintText: 'Write  your journal entry here...',
+          decoration: const InputDecoration(
+            hintText: 'Write your journal entry here...',
             border: OutlineInputBorder(),
           ),
         ),
